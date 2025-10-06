@@ -1,0 +1,4 @@
+body { line-height: 1.4; }
+.card { border-radius: 1rem; }
+#tasksList .list-group-item { display: flex; align-items: center; gap: .75rem; }
+.badge-pill { border-radius: 50rem; }
