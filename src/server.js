@@ -9,12 +9,16 @@ import { connectDB } from "./utils/db.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // security + parsing
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false
+  })
+);
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") || "*" }));
 app.use(express.json());
 app.use(morgan("dev"));
@@ -22,11 +26,16 @@ app.use(morgan("dev"));
 // API routes
 app.use("/api/tasks", taskRoutes);
 
-// serve static files later (front-end)
+// serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// fallback for SPA
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api")) {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  } else {
+    next();
+  }
 });
 
 // error handler

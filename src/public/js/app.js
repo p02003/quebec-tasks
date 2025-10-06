@@ -1,3 +1,4 @@
+console.log("✅ app.js loaded");
 const API = "/api/tasks";
 
 function renderTaskItem(t) {
